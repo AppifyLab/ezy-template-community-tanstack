@@ -1,0 +1,9 @@
+{
+  "name": "TanStack Start",
+  "description": "Full-stack React by TanStack: SSR, streaming and server functions on Vite. Type-safe routing out of the box.",
+  "framework": "tanstack-start",
+  "install": "npm install --no-audit --no-fund",
+  "dev": "npm run dev",
+  "port": 3000,
+  "e2bTemplate": "ezy-next-2g"
+}
