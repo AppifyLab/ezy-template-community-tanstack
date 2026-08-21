@@ -5,3 +5,4 @@ dist
 .tanstack
 routeTree.gen.ts
 *.local
+.wrangler
