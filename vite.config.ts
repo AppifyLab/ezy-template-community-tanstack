@@ -1,10 +1,37 @@
+import {existsSync} from 'node:fs';
+
+import {cloudflare} from '@cloudflare/vite-plugin';
 import {tanstackStart} from '@tanstack/react-start/plugin/vite';
 import viteReact from '@vitejs/plugin-react';
 import {defineConfig} from 'vite';
 
+// Cloudflare's plugin turns the SSR build into a real Worker and emits the
+// deployed config (dist/server/wrangler.json). It needs a wrangler config to do
+// either — and this repo deliberately commits none: the PLATFORM writes one at
+// build time (ADR-0001), so the deploy config can never be broken by editing a
+// committed file.
+//
+// Hence the guard. With a config present (the Go Live build) the plugin is
+// active and the output is a Worker. Without one (the IDE Preview, where the
+// platform writes nothing) the plugin is left OUT entirely — enabling it there
+// gives it no Worker to route to and EVERY request 404s, which would break the
+// live Preview. Plain Vite SSR serves the dev server instead, as it does today.
+//
+// A build that somehow runs without the config degrades to a Node server rather
+// than a Worker; Deploy catches that loudly ("Build produced no
+// server/wrangler.json") instead of shipping the wrong shape.
+const hasWranglerConfig =
+  existsSync('./wrangler.jsonc') ||
+  existsSync('./wrangler.json') ||
+  existsSync('./wrangler.toml');
+
 export default defineConfig({
-  // Start's plugin must come before React's.
-  plugins: [tanstackStart(), viteReact()],
+  // Order: Cloudflare (when active) first, then Start, then React.
+  plugins: [
+    ...(hasWranglerConfig ? [cloudflare({viteEnvironment: {name: 'ssr'}})] : []),
+    tanstackStart(),
+    viteReact(),
+  ],
   server: {
     // The Preview reaches the dev server through an authenticated proxy on a
     // different host, so bind wide and accept the forwarded Host header.
