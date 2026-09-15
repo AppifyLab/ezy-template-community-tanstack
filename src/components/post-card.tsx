@@ -30,15 +30,3 @@ export function PostCard({post}: {post: PostSummary}) {
     </Link>
   );
 }
-
-/** One line per post: date, then title. Used by the list-shaped layouts. */
-export function PostRow({post}: {post: PostSummary}) {
-  return (
-    <li className="post-row">
-      <Link to="/blog/$slug" params={{slug: post.slug}}>
-        <span className="post-row-date">{formatDate(post.publishedAt)}</span>
-        <span className="post-row-title">{post.title}</span>
-      </Link>
-    </li>
-  );
-}

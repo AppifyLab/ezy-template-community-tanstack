@@ -8,7 +8,6 @@ import {
 
 import {BrandMark} from '../components/brand';
 import {NotFound} from '../components/not-found';
-import {PrototypeVariantBar} from '../components/prototype-variant-bar';
 import {getSite, type Site} from '../lib/api';
 import appCss from '../styles.css?url';
 
@@ -95,9 +94,6 @@ function RootComponent() {
             <span className="muted">Powered by EzyCommunity</span>
           </div>
         </footer>
-
-        {/* PROTOTYPE variant switcher — REMOVE ME (see the component). */}
-        <PrototypeVariantBar />
 
         <Scripts />
       </body>
