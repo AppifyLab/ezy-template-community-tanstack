@@ -2,6 +2,7 @@ import {createFileRoute, Link} from '@tanstack/react-router';
 
 import {PostCard} from '../components/post-card';
 import {listPosts} from '../lib/api';
+import {pageTitle} from '../lib/title';
 import {useSite} from './__root';
 
 const PER_PAGE = 9;
@@ -14,7 +15,7 @@ export const Route = createFileRoute('/blog/')({
     search.page === undefined ? {} : {page: Math.max(1, Number(search.page) || 1)},
   loaderDeps: ({search}) => ({page: search.page ?? 1}),
   loader: async ({deps}) => await listPosts({data: {page: deps.page, limit: PER_PAGE}}),
-  head: () => ({meta: [{title: 'Blog'}]}),
+  head: ({matches}) => ({meta: [{title: pageTitle(matches, 'Blog')}]}),
   component: BlogIndex,
 });
 

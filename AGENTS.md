@@ -29,6 +29,6 @@ EzyCommunity platform and never reaches this code — link to those with a plain
   `allowedHosts: true`.
 - Do not add a base path or asset prefix: the app is served at `/` on its own
   origin.
-- PROTOTYPE leftovers to delete once a home layout is chosen:
-  `src/components/prototype-variant-bar.tsx`, `src/lib/variants.ts`, the
-  `validateSearch` on `src/routes/index.tsx` and the two unused home layouts.
+- A child route's `head` only gets its OWN `loaderData`; read the community name
+  from the root match via `pageTitle(matches, …)` in `src/lib/title.ts` rather
+  than calling `getSite()` again for a string that is already loaded.

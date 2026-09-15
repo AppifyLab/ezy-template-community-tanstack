@@ -2,6 +2,7 @@ import {createFileRoute, Link, notFound} from '@tanstack/react-router';
 
 import {getPost} from '../lib/api';
 import {formatDate, initials, preview, readingMinutes} from '../lib/format';
+import {pageTitle} from '../lib/title';
 
 export const Route = createFileRoute('/blog/$slug')({
   loader: async ({params}) => {
@@ -13,10 +14,10 @@ export const Route = createFileRoute('/blog/$slug')({
     }
     return post;
   },
-  head: ({loaderData}) => ({
+  head: ({loaderData, matches}) => ({
     meta: loaderData
       ? [
-          {title: loaderData.title},
+          {title: pageTitle(matches, loaderData.title)},
           {name: 'description', content: preview(loaderData.excerpt, loaderData.content)},
           {property: 'og:title', content: loaderData.title},
           ...(loaderData.coverUrl
