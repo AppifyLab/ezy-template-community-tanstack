@@ -98,5 +98,5 @@ Two rules worth keeping:
 
 ## Getting help
 
-Broke something? Every deploy is kept, so you can redeploy an earlier one from
-your EzyCommunity dashboard while you fix it.
+Broke something? Your recent deploys are kept, so you can redeploy an earlier one
+from your EzyCommunity dashboard while you fix it.
