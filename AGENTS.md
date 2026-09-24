@@ -6,6 +6,13 @@ This repo renders ONE community's public Site: `/`, `/<slug…>`, `/blog`,
 EzyCommunity platform and never reaches this code — link to those with a plain
 `<a href>`, NEVER a router `<Link>`.
 
+- The platform recognises this project by `@tanstack/react-start` in
+  `package.json` and installs with `npm ci`: npm only, keep `package-lock.json`
+  committed and add no other lockfile. Never add `astro`, `next` or another
+  framework next to it — the project is then refused.
+- Never add a route under an App path (`src/routes/api.*`, `login.tsx`,
+  `feeds/`…) or a `robots.txt` / `sitemap.xml` (as a route or in `public/`) —
+  the App owns those URLs and visitors never reach them.
 - Routes are file-based under `src/routes/`. `routeTree.gen.ts` is GENERATED —
   never edit or import it except from `src/router.tsx`.
 - ALL data access goes through `src/lib/api.ts`, and every function there is a
@@ -32,3 +39,5 @@ EzyCommunity platform and never reaches this code — link to those with a plain
 - A child route's `head` only gets its OWN `loaderData`; read the community name
   from the root match via `pageTitle(matches, …)` in `src/lib/title.ts` rather
   than calling `getSite()` again for a string that is already loaded.
+- No `.github/workflows/` — the site deploys from the platform (a push to the
+  connected branch, or a zip upload), not from Actions.
