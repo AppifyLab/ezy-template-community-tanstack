@@ -29,7 +29,15 @@ export default defineConfig({
   // Order: Cloudflare (when active) first, then Start, then React.
   plugins: [
     ...(hasWranglerConfig ? [cloudflare({viteEnvironment: {name: 'ssr'}})] : []),
-    tanstackStart(),
+    tanstackStart({
+      // TanStack Router's generator writes its placeholder route (`Hello "/"!`)
+      // into any route file it reads as EMPTY. An editor that saves in place
+      // (truncate, then write) is empty for a moment, so the generator could
+      // replace your code with the placeholder. An empty template makes it
+      // leave empty route files alone; a new route file starts empty instead
+      // of scaffolded. (The root route ignores this option.)
+      router: {customScaffolding: {routeTemplate: ''}},
+    }),
     viteReact(),
   ],
   server: {
