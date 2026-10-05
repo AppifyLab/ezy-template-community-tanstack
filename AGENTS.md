@@ -17,6 +17,9 @@ EzyCommunity platform and never reaches this code — link to those with a plain
   the App owns those URLs and visitors never reach them.
 - Routes are file-based under `src/routes/`. `routeTree.gen.ts` is GENERATED —
   never edit or import it except from `src/router.tsx`.
+- A new route file is NOT scaffolded (`customScaffolding` in `vite.config.ts`):
+  write the whole route yourself. Never leave a route file empty mid-write; if a
+  route shows `Hello "/"!`, restore it from git.
 - This Template does ALL data access in `src/lib/api.ts`, and every function
   there is a `createServerFn` server function: pages arrive with their data,
   and `api.ts` decides field by field what reaches the browser. Keep it that
