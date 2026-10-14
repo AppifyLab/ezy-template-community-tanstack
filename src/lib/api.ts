@@ -13,8 +13,8 @@
  *
  * WHERE the hostname comes from:
  * `EZY_SITE_URL` is the community's own site origin (e.g.
- * `https://intel.ezycommunity.com`). The platform injects it as a Worker var at
- * deploy time; locally it comes from `.env` / the shell (see `.env.example`).
+ * `https://acme.example.com`). The platform injects it as a Worker var at
+ * deploy time; locally set it in the shell (`EZY_SITE_URL=… npm run dev`).
  * When it is missing we fall back to the origin of the incoming request, which
  * is the same hostname in production anyway.
  *
@@ -96,20 +96,39 @@ function siteOrigin(): string {
   return getRequestUrl().origin;
 }
 
+/** How long one API call may take before the page renders without it. */
+const API_TIMEOUT_MS = 8000;
+
+/**
+ * One GET against the community API. NEVER throws: an unreachable host, a
+ * timeout, a non-2xx or a body that is not JSON all come back as `null`, and
+ * every page has a fallback for `null` — a visitor sees the page without that
+ * data, never an error screen.
+ */
 async function apiGet<T>(pathname: string): Promise<T | null> {
-  const res = await fetch(`${siteOrigin()}${pathname}`, {
-    headers: {
-      accept: 'application/json',
-      // Cloudflare 403s a request with no User-Agent. See the file header.
-      'user-agent':
-        'Mozilla/5.0 (compatible; EzyCommunitySite/1.0; +https://ezycommunity.com)',
-    },
-  });
-  if (!res.ok) {
+  try {
+    const res = await fetch(`${siteOrigin()}${pathname}`, {
+      headers: {
+        accept: 'application/json',
+        // Cloudflare 403s a request with no User-Agent. See the file header.
+        'user-agent': 'Mozilla/5.0 (compatible; SiteRenderer/1.0)',
+      },
+      signal: AbortSignal.timeout(API_TIMEOUT_MS),
+    });
+    if (!res.ok) {
+      return null;
+    }
+    const body = (await res.json()) as {data?: T};
+    return body?.data ?? null;
+  } catch (error) {
+    console.warn(`[api] ${pathname} unavailable:`, (error as Error)?.message ?? error);
     return null;
   }
-  const body = (await res.json()) as {data?: T};
-  return body?.data ?? null;
+}
+
+/** The empty page every list falls back to. */
+export function emptyPostsPage(perPage = 10, page = 1): PostsPage {
+  return {posts: [], meta: {total: 0, perPage, currentPage: page, lastPage: 1}};
 }
 
 interface RawAuthor {
@@ -194,7 +213,7 @@ export const listPosts = createServerFn({method: 'GET'})
     }>(`/api/public/blog/post/all-posts?page=${page}&per_page=${perPage}`);
 
     return {
-      posts: (raw?.data ?? []).map(toSummary),
+      posts: (Array.isArray(raw?.data) ? raw.data : []).map(toSummary),
       meta: {
         total: raw?.meta?.total ?? 0,
         perPage: raw?.meta?.perPage ?? perPage,

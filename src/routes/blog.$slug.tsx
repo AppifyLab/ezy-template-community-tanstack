@@ -1,8 +1,11 @@
 import {createFileRoute, Link, notFound} from '@tanstack/react-router';
 
+import {JoinBand} from '../components/join-band';
+import {authorLine, Avatar} from '../components/post-card';
 import {getPost} from '../lib/api';
-import {formatDate, initials, preview, readingMinutes} from '../lib/format';
+import {formatDate, preview, readingMinutes} from '../lib/format';
 import {pageTitle} from '../lib/title';
+import {useSite} from './__root';
 
 export const Route = createFileRoute('/blog/$slug')({
   loader: async ({params}) => {
@@ -31,55 +34,43 @@ export const Route = createFileRoute('/blog/$slug')({
 
 function BlogPost() {
   const post = Route.useLoaderData();
+  const site = useSite();
+  const subtitle = preview(post.excerpt, undefined, 240);
 
   return (
     <main>
-      <header
-        className="post-hero"
-        style={
-          post.coverUrl
-            ? {
-                // `backgroundImage`, not the `background` shorthand: the
-                // shorthand resets background-color and a cover that fails to
-                // load would leave the hero transparent. Quoted so a url
-                // containing `(` or `)` cannot end the css function early, and
-                // NOT re-encoded — the CDN mints it already percent-encoded.
-                backgroundImage: `url("${post.coverUrl.replace(/"/g, '%22')}")`,
-              }
-            : undefined
-        }>
-        <div className="wrap center post-hero-inner">
+      <article className="wrap narrow section post">
+        <header className="post-head">
           <h1>{post.title}</h1>
-          <p className="post-meta">
-            {post.authors.map(author => (
-              <span className="author" key={author.id}>
-                {author.avatar ? (
-                  <img src={author.avatar} alt="" width={24} height={24} />
-                ) : (
-                  <span className="avatar-fallback" aria-hidden="true">
-                    {initials(author.name)}
-                  </span>
-                )}
-                {/* Name only. A member's email is never sent to the browser. */}
-                {author.name}
+          {subtitle && <p className="subtitle post-subtitle">{subtitle}</p>}
+          <div className="byline">
+            <span className="avatars">
+              {post.authors.map(author => (
+                <Avatar key={author.id} author={author} size={36} />
+              ))}
+            </span>
+            <span>
+              {/* Names only. A member's email is never sent to the browser. */}
+              <span className="byline-name">{authorLine(post.authors)}</span>
+              <span className="meta">
+                {[formatDate(post.publishedAt), `${readingMinutes(post.content)} min read`]
+                  .filter(Boolean)
+                  .join(' · ')}
               </span>
-            ))}
-            {post.publishedAt && <span>{formatDate(post.publishedAt)}</span>}
-            <span>{readingMinutes(post.content)} minute read</span>
-          </p>
-        </div>
-      </header>
+            </span>
+          </div>
+        </header>
 
-      <article className="wrap narrow section">
+        {post.coverUrl && <img className="post-cover" src={post.coverUrl} alt="" />}
+
         {/*
-          Same rendering as the community's own blog page
-          (apps/community .../(public)/blog/[slug]/page.tsx → `DisplayContent`):
-          the body is inserted as HTML with no sanitiser. It is rich text
-          written by the community's own blog admins in the platform editor and
-          stored as HTML — the platform trusts it at the same level on its own
-          blog route. Deliberately no sanitiser here: adding one would strip
-          embeds the editor legitimately produces AND would still be a different
-          output from the App's, which is worse than matching it.
+          Same rendering as the community's own blog page: the body is inserted
+          as HTML with no sanitiser. It is rich text written by the community's
+          own blog admins in the platform editor and stored as HTML — the
+          platform trusts it at the same level on its own blog route.
+          Deliberately no sanitiser here: adding one would strip embeds the
+          editor legitimately produces AND would still be a different output
+          from the App's, which is worse than matching it.
         */}
         <div className="prose" dangerouslySetInnerHTML={{__html: post.content}} />
 
@@ -98,10 +89,12 @@ function BlogPost() {
           </p>
         )}
 
-        <p className="section">
+        <p className="back">
           <Link to="/blog">← All posts</Link>
         </p>
       </article>
+
+      <JoinBand name={site?.name ?? 'Community'} />
     </main>
   );
 }

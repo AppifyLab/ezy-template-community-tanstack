@@ -3,7 +3,7 @@
 This repo renders ONE community's public Site: `/`, `/<slug…>`, `/blog`,
 `/blog/<slug>` and a 404 for anything else. Every other path on the hostname
 (`/login`, `/join`, `/feeds`, `/dashboard`, `/api`, `/_next`…) is served by the
-EzyCommunity platform and never reaches this code — link to those with a plain
+platform and never reaches this code — link to those with a plain
 `<a href>`, NEVER a router `<Link>`.
 
 - The platform recognises this project by `@tanstack/react-start` in
@@ -61,11 +61,11 @@ file:
   `community-key.md`, `uploads.md`, `site-database.md`); `changes.md` lists what
   is new.
 
-Inside the EzyCommunity editor the same docs are at `/opt/ezy/docs/<topic>.md`.
+Inside the website editor the same docs are at `/opt/ezy/docs/<topic>.md`.
 
 ## Platform rules
 
-True for any code on an EzyCommunity Site, not only this Template:
+True for any code on a Site on this platform, not only this Template:
 
 - **What is built is detected from the files, and the verdict is final:**
   TanStack Start (`@tanstack/react-start`), Astro (static, or SSR with
@@ -99,9 +99,7 @@ True for any code on an EzyCommunity Site, not only this Template:
   blocked`. Raw TCP (`pg`, `postgres`, `node:net`) does not work at all.
 - **Site API and Site Database** (optional; this Template uses neither): one
   Hono app at `/site-api/*`, mounted by `src/routes/site-api/$.ts`, on
-  Prisma 7 Postgres. The Astro app Template
-  (`AppifyLab/ezy-template-community-astro-app`) shows both. Server code
-  calls the Site API in-process (`hc<AppType>(url, {fetch: app.request})` or
+  Prisma 7 Postgres. The Astro app Template shows both. Server code calls the Site API in-process (`hc<AppType>(url, {fetch: app.request})` or
   `app.request(path)`); never `fetch()` the own hostname for `/site-api/…` or
   a page: deployed, it reaches the App (a 404), not this Worker. Server
   fetches of `/api/…` are fine.
