@@ -14,7 +14,7 @@
  * WHERE the hostname comes from:
  * `EZY_SITE_URL` is the community's own site origin (e.g.
  * `https://acme.example.com`). The platform injects it as a Worker var at
- * deploy time; locally it comes from `.env` / the shell (see `.env.example`).
+ * deploy time; locally set it in the shell (`EZY_SITE_URL=… npm run dev`).
  * When it is missing we fall back to the origin of the incoming request, which
  * is the same hostname in production anyway.
  *

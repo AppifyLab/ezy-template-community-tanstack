@@ -65,9 +65,8 @@ other host are blocked, so keep all data fetching pointed at your own community.
 ## Running it on your machine
 
 ```bash
-cp .env.example .env     # then set EZY_SITE_URL to your community's address
 npm install
-npm run dev              # http://localhost:3000
+EZY_SITE_URL=https://your-site.example.com npm run dev   # http://localhost:3000
 ```
 
 ```bash
