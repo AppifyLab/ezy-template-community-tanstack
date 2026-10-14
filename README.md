@@ -12,7 +12,7 @@ directly:
 
 - **Upload a zip** — download this template as a zip, change what you like and
   upload the zip (the project folder, not `dist/`) on the **Custom code** page
-  of your EzyCommunity dashboard. Every new upload replaces the live site.
+  of your dashboard. Every new upload replaces the live site.
 - **Or connect GitHub** — click **Use this template** on GitHub to copy it into
   your own account, then pick that repository and a branch on the dashboard.
   Every push to that branch redeploys your site. There is no publish button:
@@ -25,20 +25,20 @@ deploys the Worker.
 ## What this site controls — and what it doesn't
 
 Your community lives on one address (for example
-`https://intel.ezycommunity.com`). Two things serve it, and the split is fixed:
+`https://acme.example.com`). Two things serve it, and the split is fixed:
 
 | Address                | Served by                          |
 | ---------------------- | ---------------------------------- |
 | `/` (home)             | **this site**                      |
 | `/your-page-name`      | **this site**                      |
 | `/blog`, `/blog/a-post`| **this site**                      |
-| `/login`, `/join`      | EzyCommunity                       |
-| `/feeds`, `/dashboard` | EzyCommunity                       |
-| everything else        | EzyCommunity                       |
+| `/login`, `/join`      | the platform                       |
+| `/feeds`, `/dashboard` | the platform                       |
+| everything else        | the platform                       |
 
 So: the public, marketing-facing pages are yours to design here. The community
 product itself — sign-up, log in, the feed, courses, events, settings — is run
-by EzyCommunity and is not in this repo. Link to it with ordinary links
+by the platform and is not in this repo. Link to it with ordinary links
 (`<a href="/feeds">`), exactly as this template does. A route you add under an
 app path (say `src/routes/api.*` or `src/routes/login.tsx`, or a
 `public/robots.txt`) is never reached by visitors — the dashboard lists any it
@@ -52,7 +52,7 @@ your site's own public API:
 - your name, logo and favicon (`/api/public/site/v1/initial-data`)
 - your published blog posts (`/api/public/blog/post/...`)
 
-Edit a post in your EzyCommunity dashboard and it appears here on the next
+Edit a post in your dashboard and it appears here on the next
 visit — no redeploy needed.
 
 ### `EZY_SITE_URL`
@@ -99,4 +99,4 @@ Two rules worth keeping:
 ## Getting help
 
 Broke something? Your recent deploys are kept, so you can redeploy an earlier one
-from your EzyCommunity dashboard while you fix it.
+from your dashboard while you fix it.
